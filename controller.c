@@ -103,6 +103,34 @@ static void mahjong_update(const uint8_t* data) {
 void controller_init() {
   pinMode(4, 2, INPUT_PULLUP);
   pinMode(4, 6, INPUT_PULLUP);
+
+  digitalWrite(3, 6, LOW);  // SVC
+
+  digitalWrite(4, 0, LOW);  // 1PC
+  digitalWrite(3, 7, LOW);  // 1PS
+  digitalWrite(3, 5, LOW);  // 1PU
+  digitalWrite(3, 4, LOW);  // 1PD
+  digitalWrite(3, 3, LOW);  // 1PL
+  digitalWrite(3, 2, LOW);  // 1PR
+  digitalWrite(3, 1, LOW);  // 1P1
+  digitalWrite(3, 0, LOW);  // 1P2
+  digitalWrite(4, 7, LOW);  // 1P3
+  digitalWrite(1, 6, LOW);  // 1P4
+  digitalWrite(4, 5, LOW);  // 1P5
+  digitalWrite(4, 4, LOW);  // 1P6
+
+  digitalWrite(4, 1, LOW);  // 2PC
+  digitalWrite(1, 7, LOW);  // 2PS
+  digitalWrite(1, 5, LOW);  // 2PU
+  digitalWrite(1, 4, LOW);  // 2PD
+  digitalWrite(1, 3, LOW);  // 2PL
+  digitalWrite(1, 2, LOW);  // 2PR
+  digitalWrite(1, 1, LOW);  // 2P1
+  digitalWrite(1, 0, LOW);  // 2P2
+  digitalWrite(0, 7, LOW);  // 2P3
+  digitalWrite(0, 6, LOW);  // 2P4
+  digitalWrite(0, 5, LOW);  // 2P5
+  digitalWrite(0, 4, LOW);  // 2P6
 }
 
 void controller_update(uint8_t hub,
@@ -250,7 +278,38 @@ void controller_poll() {
   else
     jvs_map[0] &= ~0x80;
 
-  // TODO: Update JAMMA pins
+  pinMode(3, 6, controller_button(B_SERVICE) ? OUTPUT : INPUT);  // SVC
+
+  bool mahjong_mode = digitalRead(1, 5) == LOW && digitalRead(1, 4) == LOW;
+
+  if (mahjong_mode) {
+    //
+  } else {
+    pinMode(4, 0, (raw_map[0] & (1 << B_COIN)) ? OUTPUT : INPUT);  // 1PC
+    pinMode(3, 7, (jvs_map[1] & 0x80) ? OUTPUT : INPUT);           // 1PS
+    pinMode(3, 5, (jvs_map[1] & 0x20) ? OUTPUT : INPUT);           // 1PU
+    pinMode(3, 4, (jvs_map[1] & 0x10) ? OUTPUT : INPUT);           // 1PD
+    pinMode(3, 3, (jvs_map[1] & 0x08) ? OUTPUT : INPUT);           // 1PL
+    pinMode(3, 2, (jvs_map[1] & 0x04) ? OUTPUT : INPUT);           // 1PR
+    pinMode(3, 1, (jvs_map[1] & 0x02) ? OUTPUT : INPUT);           // 1P1
+    pinMode(3, 0, (jvs_map[1] & 0x01) ? OUTPUT : INPUT);           // 1P2
+    pinMode(4, 7, (jvs_map[2] & 0x80) ? OUTPUT : INPUT);           // 1P3
+    pinMode(1, 6, (jvs_map[2] & 0x40) ? OUTPUT : INPUT);           // 1P4
+    pinMode(4, 5, (jvs_map[2] & 0x20) ? OUTPUT : INPUT);           // 1P5
+    pinMode(4, 4, (jvs_map[2] & 0x10) ? OUTPUT : INPUT);           // 1P6
+    pinMode(4, 1, (raw_map[1] & (1 << B_COIN)) ? OUTPUT : INPUT);  // 2PC
+    pinMode(1, 7, (jvs_map[3] & 0x80) ? OUTPUT : INPUT);           // 2PS
+    pinMode(1, 5, (jvs_map[3] & 0x20) ? OUTPUT : INPUT);           // 2PU
+    pinMode(1, 4, (jvs_map[3] & 0x10) ? OUTPUT : INPUT);           // 2PD
+    pinMode(1, 3, (jvs_map[3] & 0x08) ? OUTPUT : INPUT);           // 2PL
+    pinMode(1, 2, (jvs_map[3] & 0x04) ? OUTPUT : INPUT);           // 2PR
+    pinMode(1, 1, (jvs_map[3] & 0x02) ? OUTPUT : INPUT);           // 2P1
+    pinMode(1, 0, (jvs_map[3] & 0x01) ? OUTPUT : INPUT);           // 2P2
+    pinMode(0, 7, (jvs_map[4] & 0x80) ? OUTPUT : INPUT);           // 2P3
+    pinMode(0, 6, (jvs_map[4] & 0x40) ? OUTPUT : INPUT);           // 2P4
+    pinMode(0, 5, (jvs_map[4] & 0x20) ? OUTPUT : INPUT);           // 2P5
+    pinMode(0, 4, (jvs_map[4] & 0x10) ? OUTPUT : INPUT);           // 2P6
+  }
 }
 
 uint16_t controller_raw(uint8_t player) {
