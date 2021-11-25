@@ -15,7 +15,7 @@ static uint8_t mahjong[4] = {0, 0, 0, 0};
 
 enum {
   MODE_NORMAL,
-  MODE_MAHJONG,  // TODO: support
+  MODE_MAHJONG,
 };
 static uint8_t mode = MODE_NORMAL;
 static bool mode_sw = false;
@@ -283,7 +283,27 @@ void controller_poll() {
   bool mahjong_mode = digitalRead(1, 5) == LOW && digitalRead(1, 4) == LOW;
 
   if (mahjong_mode) {
-    //
+    pinMode(0, 5, INPUT_PULLUP);  // M9
+    pinMode(0, 6, INPUT_PULLUP);  // M10
+    pinMode(0, 7, INPUT_PULLUP);  // M6
+    pinMode(0, 4, INPUT_PULLUP);  // M2
+
+    pinMode(4, 0, (raw_map[0] & (1 << B_COIN)) ? OUTPUT : INPUT);  // 1PC
+
+    uint8_t matrix = 0;
+    if (digitalRead(0, 6) == LOW)
+      matrix = 1;
+    else if (digitalRead(0, 7) == LOW)
+      matrix = 2;
+    else if (digitalRead(0, 4) == LOW)
+      matrix = 3;
+
+    pinMode(3, 1, (mahjong[matrix] & 0x80) ? OUTPUT : INPUT);  // M8
+    pinMode(3, 2, (mahjong[matrix] & 0x20) ? OUTPUT : INPUT);  // M7
+    pinMode(3, 3, (mahjong[matrix] & 0x10) ? OUTPUT : INPUT);  // M4
+    pinMode(3, 4, (mahjong[matrix] & 0x08) ? OUTPUT : INPUT);  // M3
+    pinMode(3, 5, (mahjong[matrix] & 0x04) ? OUTPUT : INPUT);  // M1
+    pinMode(3, 7, (mahjong[matrix] & 0x02) ? OUTPUT : INPUT);  // M11
   } else {
     pinMode(4, 0, (raw_map[0] & (1 << B_COIN)) ? OUTPUT : INPUT);  // 1PC
     pinMode(3, 7, (jvs_map[1] & 0x80) ? OUTPUT : INPUT);           // 1PS
