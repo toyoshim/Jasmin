@@ -137,7 +137,8 @@ void controller_update(uint8_t hub,
                        const struct hub_info* info,
                        const uint8_t* data,
                        uint16_t size,
-                       uint16_t* mask) {
+                       uint16_t rapid_mask,
+                       uint16_t* button_masks) {
 #ifdef _DBG_HID_REPORT_DUMP
   static uint8_t old_data[256];
   bool modified = false;
@@ -246,7 +247,7 @@ void controller_update(uint8_t hub,
 
   bool current_mode_sw = button_check(info->button[HID_BUTTON_META], data);
 
-  controller_map(hub, 0xffff, mask);
+  controller_map(hub, rapid_mask, button_masks);
 }
 
 void controller_map(uint8_t player,

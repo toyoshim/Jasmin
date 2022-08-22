@@ -38,7 +38,8 @@ void controller_update(uint8_t hub,
                        const struct hub_info* info,
                        const uint8_t* data,
                        uint16_t size,
-                       uint16_t* mask);
+                       uint16_t rapid_mask,
+                       uint16_t* button_masks);
 void controller_map(uint8_t player,
                     uint16_t rapid_mask,
                     uint16_t* button_masks);
